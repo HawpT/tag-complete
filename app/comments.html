@@ -1,0 +1,24 @@
+<!-- Could be used if we were serving and using templateUrl -->
+<div class="container">
+  <div class="row">
+    <ul>
+      <li ng-repeat="comment in comments">
+        <p><span>{{getUserFromId(comment.userID)["name"]}}:</span> {{comment.text}}</p>
+      </li>
+    </ul>
+  </div>
+  <div class="row">
+    <form>
+      <div class="form-group">
+        <label for="commentsReply">Reply: <small>(type @ to tag user)</small></label>
+        <div id="commentsReply" class="input form-control" ng-model="reply" strip-br="true" contenteditable></div>
+        <div class="collapse" ng-class="{'show': searchResults.length > 0}">
+          <ul class="list-group">
+            <li class="list-group-item" ng-repeat="result in searchResults" value="{{result.name}}"
+              ng-class="{'active': $index === selectedIndex}" ng-click="generateUserLink(result)">@{{result.name}}</li>
+          </ul>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,34 @@
+html {
+  height: 100%;
+  overflow: auto;
+}
+
+body {
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  font-family: 'Lato', sans-serif;
+}
+
+body>* {
+  flex: 1 1 auto;
+}
+
+body>header,
+body>footer {
+  flex: 0 0 auto;
+}
+
+.content-wrapper {
+  margin-top: 81px;
+}
+
+
+div.input {
+  -moz-appearance: textfield;
+  -webkit-appearance: textfield;
+  width: 600px;
+  line-height: 20px;
+  font-size: 16px;
+}
