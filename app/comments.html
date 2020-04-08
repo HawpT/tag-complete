@@ -1,24 +1,32 @@
 <!-- Could be used if we were serving and using templateUrl -->
-<div class="container">
-  <div class="row">
-    <ul>
-      <li ng-repeat="comment in comments">
-        <p><span>{{getUserFromId(comment.userID)["name"]}}:</span> {{comment.text}}</p>
-      </li>
-    </ul>
-  </div>
-  <div class="row">
-    <form>
-      <div class="form-group">
-        <label for="commentsReply">Reply: <small>(type @ to tag user)</small></label>
-        <div id="commentsReply" class="input form-control" ng-model="reply" strip-br="true" contenteditable></div>
-        <div class="collapse" ng-class="{'show': searchResults.length > 0}">
-          <ul class="list-group">
-            <li class="list-group-item" ng-repeat="result in searchResults" value="{{result.name}}"
-              ng-class="{'active': $index === selectedIndex}" ng-click="generateUserLink(result)">@{{result.name}}</li>
-          </ul>
+<div style="padding: 50px 0;">
+  <div class="container">
+    <div class="row">
+      <ul>
+        <li ng-repeat="comment in comments">
+          <p><span>{{getUserFromId(comment.userID)["name"]}}:</span> <span ng-bind-html="comment.text"></span></p>
+        </li>
+      </ul>
+    </div>
+    <div class="row">
+      <form>
+        <div class="form-group">
+          <div class="form-input">
+            <input type="text" class="form-control shape new-angle" ng-model="reply" ng-change="replyChanged()"
+              strip-br="true" tagbox placeholder="Press '@' to tag a user">
+          </div>
+          <div class="hidden-select-parent">
+            <div class="hidden-select shape new-angle" ng-class="{'show': searchResults.length > 0}">
+              <ul class="hidden-select-group">
+                <li class="hidden-select-item" ng-repeat="result in searchResults" value="{{result.name}}"
+                  ng-class="{'active': $index === selectedIndex}" ng-click="tagUser(result)">@{{result.name}}</li>
+              </ul>
+            </div>
+          </div>
+          <input type="button" class="btn btn-xl main-bg submit-btn shape new-angle" ng-click="submit()"
+            ng-disabled="reply.length === 0" value="Reply">
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
 </div>

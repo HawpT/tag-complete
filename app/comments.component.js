@@ -5,29 +5,30 @@ app.component('commentsComponent', {
     $scope.searchResults = [];
     $scope.search = '';
     $scope.selectedIndex = 0;
+    $scope.selectedUser = null;
+    $scope.tagIndex = 0;
+    $scope.searchStarted = false;
+
+    $scope.submit = function () {
+      var reply = $scope.reply;
+      $scope.users.map(u => '@' + u.name).forEach(un => {
+        reply = reply.split(un).join('<span class="usertag">' + un + '</span>');;
+      });
+      $scope.comments.push({
+        'userID': 1,
+        'text': reply
+      });
+      $scope.reply = '';
+      $scope.$digest();
+    };
 
     $scope.replyChanged = function () {
-      //do some substitutions on a temp string to try to ignore false positives
-      var reply = $scope.reply.replace(/<span class="user">@/ig, '<span class="user">X');
-      reply = $scope.reply.replace(/ @/g, ' X');
-      reply = $scope.reply.replace(/^[\w\W]+@ /g, 'X ');
-      reply = $scope.reply.replace(/(?:\w+)@(?=\w+)/ig, 'X');
-      var index = reply.indexOf('@');
-      var nextWhitespace = reply.slice(index).indexOf(' '); //only search until whitespace or EOS
-      nextWhitespace = nextWhitespace === -1 ? reply.length : nextWhitespace;
-
-      if (index >= 0) {
-        var search = reply.slice(index, nextWhitespace);
-        $scope.search = search;
-
-        //remove our @from the search result if we have another character
-        if (search.length > 1) {
-          search = search.slice(1);
-        } else {
-          $scope.selectedIndex = 0; //when @ symbol is first typed, reset selected
-        }
+      if ($scope.searchStarted) {
         $scope.searchResults = $scope.users.map(u => {
-            u.index = u.name.toLowerCase().indexOf(search.toLowerCase());
+            if ($scope.search === '@')
+              u.index = 0;
+            else
+              u.index = u.name.toLowerCase().indexOf($scope.search.slice(1).toLowerCase());
             return u;
           }) //Add an index we can use to sort later to the user object
           .filter(u => u.index >= 0) //filter values with no match
@@ -35,17 +36,28 @@ app.component('commentsComponent', {
       }
     };
 
-    $scope.generateUserLink = function (user) {
-
-      $scope.reply = $scope.reply.replace(
+    $scope.tagUser = function (user) {
+      //substitue existings handles to keep from interferring with search
+      var reply = $scope.reply;
+      $scope.users.forEach(u => {
+        reply = reply.split('@' + u.name).join('#' + u.userID + '#');
+      });
+      reply = reply.replace(
         $scope.search,
-        '<span class="user">@' + user.name + '</span>');
-      return true;
+        '@' + user.name + ' ');
+      $scope.users.forEach(u => {
+        reply = reply.split('#' + u.userID + '#').join('@' + u.name);
+      });
+      $scope.reply = reply;
+      $scope.searchResults = [];
+      $scope.search = '';
+      $scope.searchStarted = false;
     }
 
     $scope.getUserFromId = function (userID) {
       return this.users.find(u => u.userID === userID);
     }
+
 
     //Sample data
 
