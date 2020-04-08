@@ -6,5 +6,7 @@ SETUP
 This feature uses node package manager.
 
 > git clone https://github.com/HawpT/tag-complete/
+
 > npm i
+
 > npm start
